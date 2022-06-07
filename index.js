@@ -4,17 +4,20 @@ var PUTAPUTA = function() {
             puta.ElementVisible('Inici', false);
             puta.ElementVisible('Codificar', true);
             puta.ElementVisible('TornarInici', true);
+            puta.ElementVisible('Finestra_Missatge', false);
         });
         document.getElementById('Inici_DesCodificar').addEventListener('click', function() { 
             puta.ElementVisible('Inici', false);
             puta.ElementVisible('DesCodificar', true);
             puta.ElementVisible('TornarInici', true);
+            puta.ElementVisible('Finestra_Missatge', false);
 //            puta.Descodificar();
         });
         document.getElementById('Inici_Test').addEventListener('click', function() { 
             puta.ElementVisible('Inici', false);
             puta.ElementVisible('Test', true);
             puta.ElementVisible('TornarInici', true);
+            puta.ElementVisible('Finestra_Missatge', false);
         });
         
         document.getElementById('TornarInici').addEventListener('click', function() { 
@@ -26,6 +29,29 @@ var PUTAPUTA = function() {
             setTimeout(function(){ puta.PUTAaASCII("Input_Descodificar", "Input_Descodificar"); }, 100);
         });
         
+        document.getElementById('Buto_Missatge').addEventListener('click', function() { 
+            puta.OcultarMissatge();
+        });
+            
+
+        document.getElementById('DictarCodif').addEventListener('input', function() { 
+            localStorage.setItem("DictarCodif", document.getElementById("DictarCodif").checked);
+        });
+        document.getElementById('DictarDecodif').addEventListener('input', function() { 
+            localStorage.setItem("DictarDecodif", document.getElementById("DictarDecodif").checked);
+        });
+            
+
+        // Localstorage
+        var IDC = localStorage.getItem("DictarCodif");
+        var IDD = localStorage.getItem("DictarDecodif");
+        if (IDC !== null) {
+            if (IDC == "true") document.getElementById("DictarCodif").checked = true;
+        }
+        if (IDD !== null) {
+            if (IDD == "true") document.getElementById("DictarDecodif").checked = true;
+        }
+
         this.MenuInicial();
     };
     
@@ -43,10 +69,16 @@ var PUTAPUTA = function() {
         this.ElementVisible('TornarInici', false);        
     };
     
+    // Funció del buto Codificar
     this.Codificar = function() {
-        puta.ASCIIaPUTA("Input_Cristia2", "Input_Cristia2");
-        document.getElementById('Input_Cristia2').value = "";
-        this.MenuInicial();
+        if (document.getElementById('Input_Cristia2').value !== "") {
+            puta.ASCIIaPUTA("Input_Cristia2", "Input_Cristia2");
+            document.getElementById('Input_Cristia2').value = "";
+            this.MenuInicial();
+        }
+        else {
+            this.MostrarMissatge("Escriu un texte per codificar.");
+        }
     };
     
     this.Descodificar = function() {
@@ -121,28 +153,6 @@ var PUTAPUTA = function() {
             }
         }
 
-    /*                console.log(Bin);
-        var NumPutas = RandInt(Math.floor(Bin.length / 4), 1);
-        console.log(NumPutas);
-        // El texte 'prova' son 40 caracters en puta
-        // Cada puta te 2 consonants fixes (P, T) i 2 vocals (U, A) de longitud variable
-        // Si NumPutas es 1, s'ha de restar dels 40 caracters els 2 fixes, i els 38 restants es reparteixen entre U's i A's
-
-        // Bin.length - (NumPutas * 2) son el total de caracters variables
-        // (NumPutas * 2) son el total de vocals que poden anar de 1 al total caracters variables
-
-        var Contador = 0;
-        for (var i = 0; i < Bin.length; i++) {
-            pos = ((Bin[i] === 0) ? 0 : 4);
-            Resultat += CaractersPUTA[Contador + ((Bin[i] === 0) ? 0 : 4)];
-
-            Contador ++;
-            if (Contador === 4 && i < Bin.length -1) { 
-                Resultat += " ";
-                Contador = 0;
-            }
-        }*/
-
 
         var TARet = document.getElementById(InputD);
         // La idea es enviar el link per descodificar, peró puc fer que s'envï la frase codificada amb el mateix link, o haig de fer que facin un paste? (desde perspectiva watsupp
@@ -151,13 +161,17 @@ var PUTAPUTA = function() {
         TARet.select();
         try {
             document.execCommand('copy');
-            var TextoDictado = new SpeechSynthesisUtterance(TARet.value);
-            TextoDictado.lang = 'ca'
-            window.speechSynthesis.speak(TextoDictado);
-            
+            this.MostrarMissatge("Texte codificat guardat al porta papers.");            
         }
         catch(err) {
             console.log("error en el Control+C", err);
+        }
+
+        if (document.getElementById("DictarCodif").checked === true) {
+            var TextoDictado = new SpeechSynthesisUtterance(TARet.value);
+            TextoDictado.lang = 'ca'
+            window.speechSynthesis.cancel();
+            window.speechSynthesis.speak(TextoDictado);
         }
     };
 
@@ -221,19 +235,32 @@ var PUTAPUTA = function() {
                 Bin = "";
             }
         }
+
+        // Selecciono tot el texte del input
         var TARet = document.getElementById(InputD);
         TARet.value = Resultat;
         TARet.select();
+
+        if (document.getElementById("DictarDecodif").checked === true) {
+            // Faig el text to speech
             var TextoDictado = new SpeechSynthesisUtterance(Resultat);
             TextoDictado.lang = 'ca'
+            window.speechSynthesis.cancel();
             window.speechSynthesis.speak(TextoDictado);
-        
-/*        try {
-            document.execCommand('copy');
         }
-        catch(err) {
-            console.log("error en el Control+C", err);
-        }*/
+        
+    };
+
+    // Funció per mostrar un missatge
+    this.MostrarMissatge = function(Missatge) {
+
+        document.getElementById("Missatge").innerHTML = Missatge;
+        document.getElementById("Finestra_Missatge").setAttribute("visible", "true");
+    };
+
+    // Funció per ocultar el missatge
+    this.OcultarMissatge = function() {
+        document.getElementById("Finestra_Missatge").removeAttribute("visible");
     };
 
 };

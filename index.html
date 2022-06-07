@@ -40,11 +40,19 @@
         <div id='Codificar'>
             <textarea id='Input_Cristia2' placeholder="Escriu el missatge que vols codificar"></textarea>
             <button id='Buto_Codificar' onclick='puta.Codificar()'>Codificar</button>
+            <div class="InputDictar">
+                <input type="checkbox" name="DictarCodif" id="DictarCodif">
+                <label for="DictarCodif">Dictar codificació</label>
+            </div>
 <!--            <div id='CodificarOk'>S'ha codificat el texte, el resultat ha quedat guardat al portapapers.</div> -->
         </div>
         
         <div id='DesCodificar'>
             <textarea id='Input_Descodificar' placeholder="Enganxa el texte a descodificar"></textarea>
+            <div class="InputDictar">
+                <input type="checkbox" name="DictarDecodif" id="DictarDecodif">
+                <label for="DictarDecodif">Dictar decodificació</label>
+            </div>
 <!--            <div id='CodificarOk'>Hi han caracters no com<b>PUTA</b>bles en el texte del portapapers.</div> -->
         </div>
         
@@ -61,12 +69,12 @@
         </div>
         
         <!-- Buto per tornar al principi -->
-        <div id="TornarInici"></div>
+        <button id="TornarInici">Inici</button>
         <!-- Input ocult per copiar el texte del portapapers -->
 <!--         -->
         <div id='Finestra_Missatge'>
             <div id='Missatge'></div>
-            <div id='Buto_Missatge'></div>
+            <button id='Buto_Missatge'>Ok</button>
         </div>
     </body>
 </html>
